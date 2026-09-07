@@ -5,6 +5,7 @@
 #define APB1 0x40000000UL
 #define AHB  0x40020000UL
 #define RCC_BASE (AHB+0x1000)
+#define FLASH_ACR_ADDR 0x40022000UL
 #define GPIOA_BASE (APB2+0x800)
 #define GPIOB_BASE (APB2+0xC00)
 #define GPIOC_BASE (APB2+0x1000)
@@ -30,4 +31,5 @@ typedef struct { volatile uint32_t SR,CR1,CR2,SMPR1,SMPR2,JOFR1,JOFR2,JOFR3,JOFR
 #define I2C1 ((I2C_t*)I2C1_BASE)
 #define TIM2 ((TIM_t*)TIM2_BASE)
 #define ADC1 ((ADC_t*)ADC1_BASE)
+#define FLASH_ACR (*(volatile uint32_t*)FLASH_ACR_ADDR)
 #endif
