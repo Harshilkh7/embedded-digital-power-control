@@ -1,0 +1,3 @@
+[wokwi]
+version = 1
+firmware = "../../firmware/build/firmware.elf"
