@@ -1,6 +1,7 @@
 #ifndef DRIVERS_H
 #define DRIVERS_H
 #include <stdint.h>
+void board_init(void);
 void gpio_init(void); void led_toggle(void);
 void pwm_init(void); void pwm_set(float duty);
 void uart_init(void); void uart_puts(const char*);
