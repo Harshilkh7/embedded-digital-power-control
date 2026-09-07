@@ -2,9 +2,10 @@
 #include "control.h"
 
 int main(void) {
-    gpio_init(); pwm_init(); uart_init(); spi_init(); i2c_init(); adc_init();
+    board_init();
     uart_puts("Embedded Power Control FW\r\n");
     while(1) {
+        /* PA1 senses the simulated 0-3.3 V feedback signal. */
         float v=((float)adc_read()/4095.0f)*3.3f;
         float duty=control_update(3.3f,v);
         pwm_set(duty);
