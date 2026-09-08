@@ -13,6 +13,7 @@ constexpr uint8_t SPI_SCK = 18;
 constexpr uint8_t SPI_MISO = 19;
 constexpr uint8_t SPI_MOSI = 23;
 constexpr uint8_t SPI_CS = 5;
+constexpr uint8_t PWM_CHANNEL = 0;
 constexpr uint32_t PWM_FREQUENCY = 20000;
 constexpr uint8_t PWM_BITS = 12;
 constexpr uint16_t PWM_MAX = (1U << PWM_BITS) - 1U;
@@ -28,13 +29,14 @@ void led_toggle(void) {
 }
 
 void pwm_init(void) {
-    ledcAttach(PWM_PIN, PWM_FREQUENCY, PWM_BITS);
-    ledcWrite(PWM_PIN, 0);
+    ledcSetup(PWM_CHANNEL, PWM_FREQUENCY, PWM_BITS);
+    ledcAttachPin(PWM_PIN, PWM_CHANNEL);
+    ledcWrite(PWM_CHANNEL, 0);
 }
 
 void pwm_set(float duty) {
     duty = constrain(duty, 0.0f, 0.95f);
-    ledcWrite(PWM_PIN, static_cast<uint32_t>(duty * PWM_MAX));
+    ledcWrite(PWM_CHANNEL, static_cast<uint32_t>(duty * PWM_MAX));
 }
 
 void uart_init(void) {
