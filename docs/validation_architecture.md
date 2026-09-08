@@ -5,7 +5,9 @@ The validation layer is built around the **ESP32 DevKit power-control firmware**
 ```text
 Engineering Requirement
         ↓
-GenAI-assisted test generation
+Optional LLM test generation
+        ↓
+Deterministic validation catalog (CI fallback)
         ↓
 Python validation runner
         ↓
@@ -38,7 +40,9 @@ The actual embedded target is an ESP32 DevKit firmware project built with Platfo
 
 ## GenAI boundary
 
-`automation/ai_test_generator.py` provides the interface between natural-language engineering requirements and candidate ESP32 test specifications. The repository uses a deterministic fallback so the project runs without an API key. An approved LLM API can replace that boundary without changing the validation runner.
+`automation/ai_test_generator.py` is the stable application interface. By default it uses a deterministic catalog so CI remains reproducible. When `GENAI_TEST_GENERATOR=1` and `OPENAI_API_KEY` are configured, it delegates candidate generation to `automation/llm_test_generator.py` through the OpenAI Responses API. The runner consumes the same `TestSpec` contract in either mode.
+
+The LLM output is treated as **candidate tests**, not as an authority: the deterministic validation runner decides pass/fail against explicit firmware behavior checks.
 
 ## Why this belongs with the power-control project
 
