@@ -32,16 +32,28 @@ void led_toggle(void) {
 }
 
 void pwm_init(void) {
-    // Arduino-ESP32 3.x API: attach the PWM pin to a selected channel.
+#if defined(ESP_ARDUINO_VERSION_MAJOR) && ESP_ARDUINO_VERSION_MAJOR >= 3
+    // Arduino-ESP32 3.x API.
     if (!ledcAttachChannel(PWM_PIN, PWM_FREQUENCY, PWM_BITS, PWM_CHANNEL)) {
         Serial.println("PWM attach failed");
     }
     ledcWriteChannel(PWM_CHANNEL, 0);
+#else
+    // Arduino-ESP32 2.x API used by the stable PlatformIO ESP32 platform.
+    ledcSetup(PWM_CHANNEL, PWM_FREQUENCY, PWM_BITS);
+    ledcAttachPin(PWM_PIN, PWM_CHANNEL);
+    ledcWrite(PWM_CHANNEL, 0);
+#endif
 }
 
 void pwm_set(float duty) {
     duty = constrain(duty, 0.0f, 0.95f);
-    ledcWriteChannel(PWM_CHANNEL, static_cast<uint32_t>(duty * PWM_MAX));
+    const uint32_t raw = static_cast<uint32_t>(duty * PWM_MAX);
+#if defined(ESP_ARDUINO_VERSION_MAJOR) && ESP_ARDUINO_VERSION_MAJOR >= 3
+    ledcWriteChannel(PWM_CHANNEL, raw);
+#else
+    ledcWrite(PWM_CHANNEL, raw);
+#endif
 }
 
 void uart_init(void) {
