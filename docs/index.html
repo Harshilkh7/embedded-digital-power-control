@@ -1,32 +1,144 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Embedded Digital Power Control & AI Validation</title>
 <style>
-:root{--bg:#0b1020;--card:#121a2d;--text:#edf2ff;--muted:#aab5d1;--line:#293553;--accent:#7dd3fc;--good:#86efac;--warn:#fbbf24}*{box-sizing:border-box}body{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;max-width:1180px;margin:auto;padding:28px;line-height:1.5;background:var(--bg);color:var(--text)}.hero{padding:36px 0}.eyebrow{color:var(--accent);font-weight:700;letter-spacing:.08em;text-transform:uppercase}.muted{color:var(--muted)}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin:16px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.metric{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}.metric b{display:block;font-size:1.35rem;margin-top:5px}label{display:block;font-weight:650}input{width:100%;margin-top:6px;padding:10px;border:1px solid var(--line);border-radius:8px;background:#0d1426;color:var(--text)}button{padding:11px 17px;border:0;border-radius:9px;background:var(--accent);color:#06101b;font-weight:800;cursor:pointer;margin-top:14px}button.secondary{background:#1d2945;color:var(--text)}canvas{width:100%;height:390px;border:1px solid var(--line);border-radius:10px;background:#0d1426}.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:5px 10px;margin:4px;font-size:.9rem}.links a{color:var(--accent);margin-right:18px}.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;align-items:center}.node{border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}.arrow{text-align:center;color:var(--accent);font-weight:800}.status{font-weight:800}.good{color:var(--good)}.small{font-size:.9rem}pre{overflow:auto;background:#0d1426;padding:16px;border-radius:10px;border:1px solid var(--line)}
-</style></head>
+:root{--bg:#08101c;--card:#101a2d;--card2:#0c1526;--text:#eef4ff;--muted:#9eabc5;--line:#263653;--accent:#7dd3fc;--good:#86efac;--bad:#fb7185;--warn:#fbbf24}*{box-sizing:border-box}body{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;max-width:1180px;margin:auto;padding:28px;line-height:1.5;background:var(--bg);color:var(--text)}.hero{padding:28px 0 20px}.eyebrow{color:var(--accent);font-weight:800;letter-spacing:.08em;text-transform:uppercase}.muted{color:var(--muted)}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;margin:16px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:16px 0}.metric{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:16px}.metric b{display:block;font-size:1.25rem;margin-top:5px}label{display:block;font-weight:700}input,select,textarea{width:100%;margin-top:6px;padding:11px;border:1px solid var(--line);border-radius:9px;background:#0a1323;color:var(--text);font:inherit}textarea{min-height:82px;resize:vertical}button{padding:11px 17px;border:0;border-radius:9px;background:var(--accent);color:#06101b;font-weight:850;cursor:pointer;margin:14px 8px 0 0}button.secondary{background:#1d2945;color:var(--text)}button.danger{background:#3a1823;color:#fecdd3;border:1px solid #6b2535}.status{font-weight:850}.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}.small{font-size:.9rem}canvas{width:100%;height:390px;border:1px solid var(--line);border-radius:10px;background:#0a1323}.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:5px 10px;margin:4px;font-size:.9rem}.links a{color:var(--accent);margin-right:18px}.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;align-items:center}.node{border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center;background:var(--card2)}.arrow{text-align:center;color:var(--accent);font-weight:900}.testrow{display:grid;grid-template-columns:1.4fr .8fr .8fr 1fr;gap:8px;padding:11px 0;border-bottom:1px solid var(--line);align-items:center}.testrow:last-child{border-bottom:0}.pill{display:inline-block;padding:4px 9px;border-radius:999px;font-weight:800;font-size:.85rem}.pill.pass{background:#123522;color:var(--good)}.pill.fail{background:#421b27;color:#fecdd3}.hidden{display:none}pre{overflow:auto;background:#0a1323;padding:16px;border-radius:10px;border:1px solid var(--line);white-space:pre-wrap}
+</style>
+</head>
 <body>
-<section class="hero"><div class="eyebrow">Embedded Systems • Power Control • AI Validation</div><h1>Embedded Digital Power Control</h1><p class="muted">Simulation-first STM32 firmware platform with digital PI regulation and an AI-assisted automated firmware validation layer.</p><div class="links"><a href="https://github.com/Harshilkh7/embedded-digital-power-control" target="_blank">GitHub repository ↗</a></div></section>
-<div class="card"><h2>Interactive Buck Converter Simulation</h2><p class="muted">Adjust the controller and plant parameters, then run the browser model. This is a portfolio/demo simulation, not a physical hardware measurement.</p><div class="grid"><div><label>Vin (V)<input id="vin" type="number" value="5" step="0.1"></label></div><div><label>Vref (V)<input id="ref" type="number" value="3.3" step="0.1"></label></div><div><label>Load (Ω)<input id="load" type="number" value="2" step="0.1"></label></div><div><label>Kp<input id="kp" type="number" value="0.08" step="0.01"></label></div><div><label>Ki<input id="ki" type="number" value="80" step="5"></label></div></div><button onclick="run()">Run Simulation</button></div>
-<div class="card"><canvas id="plot" width="1100" height="390"></canvas></div>
-<div class="metrics"><div class="metric"><span class="muted">Final Vout</span><b id="final">—</b></div><div class="metric"><span class="muted">Overshoot</span><b id="over">—</b></div><div class="metric"><span class="muted">Steady-state error</span><b id="err">—</b></div><div class="metric"><span class="muted">Settling estimate</span><b id="settle">—</b></div></div>
-<div class="card"><h2>Integrated System Architecture</h2><div class="flow"><div class="node">Vref</div><div class="arrow">→</div><div class="node">Digital PI</div><div class="arrow">→</div><div class="node">PWM / TIM2</div><div class="arrow">→</div><div class="node">Buck Plant</div><div class="arrow">→</div><div class="node">ADC Feedback</div></div><p class="muted">The same embedded power-control behavior is surrounded by automated validation, fault injection, protocol checks and GenAI-assisted test generation.</p></div>
-<div class="card"><h2>AI-Assisted Embedded Firmware Validation</h2><p class="muted">The validation layer turns engineering requirements into candidate test scenarios, executes deterministic firmware/device simulations, injects faults, analyzes logs and produces regression results.</p><div class="flow"><div class="node">Requirement</div><div class="arrow">→</div><div class="node">GenAI Test Generation</div><div class="arrow">→</div><div class="node">Python Runner</div><div class="arrow">→</div><div class="node">Firmware Simulation</div><div class="arrow">→</div><div class="node">Logs / Results</div></div><div class="grid" style="margin-top:16px"><div class="metric"><span class="muted">Nominal regulation</span><b class="good">PASS</b></div><div class="metric"><span class="muted">Load-step recovery</span><b class="good">PASS</b></div><div class="metric"><span class="muted">Protection cases</span><b class="good">PASS</b></div><div class="metric"><span class="muted">Protocol / CRC</span><b class="good">PASS</b></div></div><button class="secondary" onclick="showValidation()">View Validation Flow</button><pre id="validation" style="display:none">Requirement: Vout should regulate to 3.3 V after a load change.
-↓
-Candidate test generated by the AI-assisted test layer
-↓
-Python validation runner
-↓
-Firmware/device simulation + fault injection
-↓
-Log analysis
-↓
-PASS / FAIL + engineering report</pre></div>
-<div class="card"><h2>Engineering Stack</h2><span class="tag">STM32F103C8</span><span class="tag">Embedded C</span><span class="tag">PWM</span><span class="tag">ADC</span><span class="tag">UART</span><span class="tag">SPI</span><span class="tag">I²C</span><span class="tag">Digital PI</span><span class="tag">Python</span><span class="tag">pytest</span><span class="tag">Fault Injection</span><span class="tag">GenAI</span><span class="tag">Wokwi</span><span class="tag">GitHub Actions</span></div>
-<div class="card small"><strong>Portfolio note:</strong> The browser dashboard and Python models are simulations. No physical hardware measurements or real-board validation are claimed. The GenAI test-generation interface includes a deterministic fallback so the repository remains runnable without an external API key.</div>
+<section class="hero">
+<div class="eyebrow">Embedded Systems • Power Control • AI Validation</div>
+<h1>Embedded Digital Power Control</h1>
+<p class="muted">Simulation-first STM32 firmware platform with digital PI regulation and an AI-assisted automated firmware validation layer.</p>
+<div class="links"><a href="https://github.com/Harshilkh7/embedded-digital-power-control" target="_blank">GitHub repository ↗</a></div>
+</section>
+
+<div class="card">
+<h2>1. Configure the Embedded Power Controller</h2>
+<p class="muted">These values drive the browser model. The resulting Vout, controller performance and electrical behavior are then passed directly into the validation checks below.</p>
+<div class="grid">
+<div><label>Vin (V)<input id="vin" type="number" value="5" min="0.1" step="0.1"></label></div>
+<div><label>Vref (V)<input id="ref" type="number" value="3.3" min="0.1" step="0.1"></label></div>
+<div><label>Load (Ω)<input id="load" type="number" value="2" min="0.1" step="0.1"></label></div>
+<div><label>Kp<input id="kp" type="number" value="0.08" min="0" step="0.01"></label></div>
+<div><label>Ki<input id="ki" type="number" value="80" min="0" step="5"></label></div>
+</div>
+<button onclick="runSimulation()">Run Simulation + Validate</button>
+<button class="secondary" onclick="loadFailPreset()">Load Failure Example</button>
+</div>
+
+<div class="card"><h2>Vout Response</h2><canvas id="plot" width="1100" height="390"></canvas></div>
+<div class="metrics">
+<div class="metric"><span class="muted">Final Vout</span><b id="final">—</b></div>
+<div class="metric"><span class="muted">Overshoot</span><b id="over">—</b></div>
+<div class="metric"><span class="muted">Steady-state error</span><b id="err">—</b></div>
+<div class="metric"><span class="muted">Settling time</span><b id="settle">—</b></div>
+<div class="metric"><span class="muted">Peak current</span><b id="peakCurrent">—</b></div>
+<div class="metric"><span class="muted">Peak PWM duty</span><b id="peakDuty">—</b></div>
+</div>
+
+<div class="card" id="validationCard">
+<h2>2. Automated Validation Report</h2>
+<p class="muted">The validation engine consumes the values and simulation results above. Acceptance limits are intentionally explicit: regulation error ≤ 2%, overshoot ≤ 5%, and settling time ≤ 20 ms.</p>
+<div id="overall" class="metric"><span class="muted">Overall result</span><b>Run the simulation to validate</b></div>
+<div id="testReport" style="margin-top:14px"></div>
+</div>
+
+<div class="card">
+<h2>3. AI-Assisted Test Generation</h2>
+<p class="muted">This browser demo mirrors the repository's deterministic GenAI fallback: the requirement and current engineering parameters are converted into candidate validation scenarios. In a production setup, this boundary can be replaced by an approved LLM API.</p>
+<label>Engineering requirement<textarea id="requirement">Vout should regulate to the requested reference with low overshoot and recover within the settling-time limit.</textarea></label>
+<button onclick="generateTests()">Generate Tests</button>
+<div id="generatedTests" style="margin-top:14px"></div>
+</div>
+
+<div class="card">
+<h2>4. Fault Injection / Protection Validation</h2>
+<p class="muted">Use this section to deliberately inject a bad measurement and verify that the firmware behavior model enters the correct protection state.</p>
+<div class="grid">
+<div><label>Sensed voltage (V)<input id="faultV" type="number" value="3.80" step="0.05"></label></div>
+<div><label>Sensed current (A)<input id="faultI" type="number" value="0.50" step="0.1"></label></div>
+<div><label>Expected firmware state<select id="expected"><option>OVERVOLTAGE</option><option>UNDERVOLTAGE</option><option>OVERCURRENT</option><option>REGULATING</option></select></label></div>
+</div>
+<button onclick="runFaultTest()">Run Fault Test</button>
+<button class="secondary" onclick="setFault(3.8,.5,'OVERVOLTAGE')">Over-voltage</button>
+<button class="secondary" onclick="setFault(2.5,.5,'UNDERVOLTAGE')">Under-voltage</button>
+<button class="secondary" onclick="setFault(3.3,2.5,'OVERCURRENT')">Over-current</button>
+<div id="faultResult" class="metric" style="margin-top:16px"><span class="muted">Fault test</span><b>Choose a stimulus and run the test</b></div>
+</div>
+
+<div class="card">
+<h2>Integrated System Architecture</h2>
+<div class="flow">
+<div class="node">Vref / Inputs</div><div class="arrow">→</div><div class="node">Digital PI</div><div class="arrow">→</div><div class="node">PWM / TIM2</div><div class="arrow">→</div><div class="node">Buck Plant</div><div class="arrow">→</div><div class="node">ADC Feedback</div>
+</div>
+<p class="muted">The same embedded power-control behavior is validated by Python-style regression checks, fault injection, protocol validation, log analysis and GenAI-assisted test generation.</p>
+</div>
+
+<div class="card">
+<h2>Validation Pipeline</h2>
+<div class="flow">
+<div class="node">User Requirement</div><div class="arrow">→</div><div class="node">GenAI Test Generation</div><div class="arrow">→</div><div class="node">Simulation Inputs</div><div class="arrow">→</div><div class="node">Firmware / Plant Model</div><div class="arrow">→</div><div class="node">Fault Injection</div><div class="arrow">→</div><div class="node">Log Analysis</div><div class="arrow">→</div><div class="node">PASS / FAIL</div>
+</div>
+</div>
+
+<div class="card"><h2>Engineering Stack</h2>
+<span class="tag">STM32F103C8</span><span class="tag">Embedded C</span><span class="tag">PWM</span><span class="tag">ADC</span><span class="tag">UART</span><span class="tag">SPI</span><span class="tag">I²C</span><span class="tag">Digital PI</span><span class="tag">Python</span><span class="tag">pytest</span><span class="tag">Fault Injection</span><span class="tag">GenAI</span><span class="tag">Wokwi</span><span class="tag">GitHub Actions</span>
+</div>
+
+<div class="card small"><strong>Portfolio note:</strong> The browser dashboard and Python models are simulations. No physical hardware measurements or real-board validation are claimed. The GenAI test-generation layer uses a deterministic fallback in the repository so the project remains runnable without an external API key.</div>
+
 <script>
-function run(){const vin=+document.getElementById('vin').value,ref=+document.getElementById('ref').value,R=+document.getElementById('load').value,kp=+document.getElementById('kp').value,ki=+document.getElementById('ki').value;const dt=1e-5,total=.04,L=10e-6,C=100e-6,N=Math.floor(total/dt),v=[];let vo=0,cur=0,integ=0;for(let k=0;k<N;k++){let e=ref-vo,cand=integ+ki*e*dt,raw=kp*e+cand,duty=Math.max(0,Math.min(.95,raw));if(!((raw>.95&&e>0)||(raw<0&&e<0)))integ=cand;let di=(duty*vin-vo)/L,dv=(cur-vo/R)/C;cur=Math.max(0,cur+di*dt);vo=Math.max(0,vo+dv*dt);v.push(vo)}const peak=Math.max(...v),final=v[N-1],ss=Math.abs(ref-final),tol=.02*Math.abs(ref);let last=0;for(let k=0;k<N;k++)if(Math.abs(v[k]-ref)>tol)last=k;document.getElementById('final').textContent=final.toFixed(3)+' V';document.getElementById('over').textContent=Math.max(0,(peak-ref)/ref*100).toFixed(2)+' %';document.getElementById('err').textContent=ss.toFixed(3)+' V';document.getElementById('settle').textContent=(last*dt*1000).toFixed(2)+' ms';const c=document.getElementById('plot'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);const ymax=Math.max(vin,ref*1.2,1);x.beginPath();v.forEach((val,k)=>{let px=k/(N-1)*c.width,py=c.height-val/ymax*c.height;k?x.lineTo(px,py):x.moveTo(px,py)});x.strokeStyle='#7dd3fc';x.lineWidth=2;x.stroke();x.setLineDash([6,4]);x.beginPath();let ry=c.height-ref/ymax*c.height;x.moveTo(0,ry);x.lineTo(c.width,ry);x.strokeStyle='#fbbf24';x.stroke();x.setLineDash([]);x.fillStyle='#edf2ff';x.font='14px system-ui';x.fillText('Vout',12,22);x.fillText('Vref',58,22);x.fillText('0 ms',5,c.height-8);x.fillText(total*1000+' ms',c.width-70,c.height-8)}
-function showValidation(){const e=document.getElementById('validation');e.style.display=e.style.display==='none'?'block':'none'}
-run();
-</script></body></html>
+const LIMITS={regulation:0.02,overshoot:5,settlingMs:20};
+let lastSimulation=null;
+function num(id){return Number(document.getElementById(id).value)}
+function validateInputs(vin,ref,R,kp,ki){if(![vin,ref,R,kp,ki].every(Number.isFinite)||vin<=0||ref<=0||R<=0||kp<0||ki<0)throw new Error('Enter valid positive plant/controller values.');if(ref>=vin)throw new Error('Vref must be lower than Vin for this buck-converter demonstration.');}
+function simulate(vin,ref,R,kp,ki){
+ const dt=1e-6,total=.02,L=10e-6,C=100e-6,N=Math.floor(total/dt);let vo=0,cur=0,integ=0;const v=[],i=[],d=[];
+ for(let k=0;k<N;k++){
+  const e=ref-vo,candidate=integ+ki*e*dt,raw=kp*e+candidate,duty=Math.max(0,Math.min(.95,raw));
+  if(!((raw>.95&&e>0)||(raw<0&&e<0)))integ=candidate;
+  const di=(duty*vin-vo)/L,dv=(cur-vo/R)/C;
+  cur=Math.max(0,cur+di*dt);vo=Math.max(0,vo+dv*dt);
+  v.push(vo);i.push(cur);d.push(duty);
+ }
+ const peak=Math.max(...v),final=v[N-1],error=Math.abs(ref-final),overshoot=Math.max(0,(peak-ref)/ref*100),tol=LIMITS.regulation*ref;
+ let lastOutside=-1;for(let k=0;k<N;k++)if(Math.abs(v[k]-ref)>tol)lastOutside=k;
+ const settlingMs=lastOutside<0?0:(lastOutside+1)*dt*1000;
+ return {vin,ref,R,kp,ki,dt,total,v,i,d,peak,final,error,overshoot,settlingMs,peakCurrent:Math.max(...i),peakDuty:Math.max(...d)};
+}
+function runSimulation(){
+ try{const vin=num('vin'),ref=num('ref'),R=num('load'),kp=num('kp'),ki=num('ki');validateInputs(vin,ref,R,kp,ki);lastSimulation=simulate(vin,ref,R,kp,ki);renderSimulation(lastSimulation);renderValidation(lastSimulation);generateTests();}
+ catch(e){document.getElementById('overall').innerHTML='<span class="muted">Input error</span><b class="bad">❌ '+e.message+'</b>';}
+}
+function renderSimulation(s){
+ document.getElementById('final').textContent=s.final.toFixed(3)+' V';document.getElementById('over').textContent=s.overshoot.toFixed(2)+' %';document.getElementById('err').textContent=s.error.toFixed(3)+' V';document.getElementById('settle').textContent=s.settlingMs.toFixed(2)+' ms';document.getElementById('peakCurrent').textContent=s.peakCurrent.toFixed(2)+' A';document.getElementById('peakDuty').textContent=(s.peakDuty*100).toFixed(1)+' %';
+ const c=document.getElementById('plot'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);const ymax=Math.max(s.vin,s.ref*1.25,1),n=s.v.length; x.beginPath();s.v.forEach((val,k)=>{const px=k/(n-1)*c.width,py=c.height-val/ymax*c.height;k?x.lineTo(px,py):x.moveTo(px,py)});x.strokeStyle='#7dd3fc';x.lineWidth=2;x.stroke();x.setLineDash([6,4]);x.beginPath();const ry=c.height-s.ref/ymax*c.height;x.moveTo(0,ry);x.lineTo(c.width,ry);x.strokeStyle='#fbbf24';x.stroke();x.setLineDash([]);x.fillStyle='#edf2ff';x.font='14px system-ui';x.fillText('Vout',12,22);x.fillText('Vref',58,22);x.fillText('0 ms',5,c.height-8);x.fillText((s.total*1000).toFixed(0)+' ms',c.width-58,c.height-8);
+}
+function renderValidation(s){
+ const tests=[
+  ['Regulation error',s.error<=s.ref*LIMITS.regulation,s.error.toFixed(3)+' V','≤ '+(s.ref*LIMITS.regulation).toFixed(3)+' V'],
+  ['Overshoot',s.overshoot<=LIMITS.overshoot,s.overshoot.toFixed(2)+' %','≤ '+LIMITS.overshoot.toFixed(2)+' %'],
+  ['Settling time',s.settlingMs<=LIMITS.settlingMs,s.settlingMs.toFixed(2)+' ms','≤ '+LIMITS.settlingMs.toFixed(2)+' ms'],
+  ['Reference below Vin',s.ref<s.vin,s.ref.toFixed(2)+' V','< '+s.vin.toFixed(2)+' V']
+ ];
+ const passed=tests.filter(t=>t[1]).length,ok=passed===tests.length;document.getElementById('overall').innerHTML='<span class="muted">Overall result • '+passed+'/'+tests.length+' checks passed</span><b class="'+(ok?'good':'bad')+'">'+(ok?'✅ VALIDATION PASSED':'❌ VALIDATION FAILED')+'</b>';
+ document.getElementById('testReport').innerHTML=tests.map(t=>'<div class="testrow"><strong>'+t[0]+'</strong><span>'+t[2]+'</span><span>'+t[3]+'</span><span class="pill '+(t[1]?'pass':'fail')+'">'+(t[1]?'PASS':'FAIL')+'</span></div>').join('');
+}
+function generateTests(){
+ const s=lastSimulation,req=document.getElementById('requirement').value.trim()||'Validate the embedded power controller';const vin=num('vin'),ref=num('ref'),R=num('load'),kp=num('kp'),ki=num('ki');
+ const tests=[['nominal_regulation',`Run Vin=${vin} V, Vref=${ref} V, R=${R} Ω, Kp=${kp}, Ki=${ki}.`,`Final Vout within ±2% of Vref.`],['overshoot_check',`Use the configured controller and measure peak Vout.`,`Overshoot ≤ 5%.`],['settling_check',`Measure the time Vout remains within ±2% of Vref.`,`Settling time ≤ 20 ms.`],['over_voltage_protection',`Inject sensed voltage of 3.80 V.`,`Firmware state becomes OVERVOLTAGE.`],['over_current_protection',`Inject sensed current of 2.50 A at 3.30 V.`,`Firmware state becomes OVERCURRENT.`]];
+ document.getElementById('generatedTests').innerHTML='<p class="small muted"><strong>Requirement:</strong> '+escapeHtml(req)+'</p>'+tests.map((t,i)=>'<div class="testrow"><strong>'+(i+1)+'. '+t[0]+'</strong><span>'+escapeHtml(t[1])+'</span><span>'+escapeHtml(t[2])+'</span><span class="pill pass">CANDIDATE</span></div>').join('');
+}
+function escapeHtml(v){return v.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function firmwareState(v,i){if(v>3.63)return'OVERVOLTAGE';if(v<2.80)return'UNDERVOLTAGE';if(i>2.0)return'OVERCURRENT';return'REGULATING';}
+function setFault(v,i,state){document.getElementById('faultV').value=v;document.getElementById('faultI').value=i;document.getElementById('expected').value=state;runFaultTest();}
+function runFaultTest(){const v=num('faultV'),i=num('faultI'),expected=document.getElementById('expected').value;if(!Number.isFinite(v)||!Number.isFinite(i)){return}const actual=firmwareState(v,i),ok=actual===expected;document.getElementById('faultResult').innerHTML='<span class="muted">Injected stimulus: '+v.toFixed(2)+' V / '+i.toFixed(2)+' A</span><b class="'+(ok?'good':'bad')+'">'+(ok?'✅ PASS':'❌ FAIL')+'</b><div class="small">Expected: <strong>'+expected+'</strong> &nbsp; Actual: <strong>'+actual+'</strong></div>';}
+function loadFailPreset(){document.getElementById('vin').value=5;document.getElementById('ref').value=3.3;document.getElementById('load').value=2;document.getElementById('kp').value=.5;document.getElementById('ki').value=300;runSimulation();}
+runSimulation();runFaultTest();
+</script>
+</body>
+</html>
