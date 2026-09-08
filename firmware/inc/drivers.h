@@ -13,6 +13,9 @@ void spi_init(void);
 uint8_t spi_transfer(uint8_t data);
 void i2c_init(void);
 void adc_init(void);
-uint16_t adc_read(void);
+uint16_t adc_read_voltage_raw(void);
+uint16_t adc_read_current_raw(void);
+float adc_voltage_from_raw(uint16_t raw);
+float adc_current_from_raw(uint16_t raw);
 
 #endif
