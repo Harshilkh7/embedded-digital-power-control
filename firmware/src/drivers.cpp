@@ -29,6 +29,7 @@ void led_toggle(void) {
 }
 
 void pwm_init(void) {
+    // Compatible with the Arduino-ESP32 core used by the pinned PlatformIO build.
     ledcSetup(PWM_CHANNEL, PWM_FREQUENCY, PWM_BITS);
     ledcAttachPin(PWM_PIN, PWM_CHANNEL);
     ledcWrite(PWM_CHANNEL, 0);
