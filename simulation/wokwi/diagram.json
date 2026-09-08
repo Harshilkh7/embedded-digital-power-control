@@ -3,12 +3,12 @@
   "author": "Embedded Power Control",
   "editor": "wokwi",
   "parts": [
-    {"type":"wokwi-blue-pill","id":"mcu","top":0,"left":0,"attrs":{}},
-    {"type":"wokwi-led","id":"led","top":100,"left":300,"attrs":{"color":"red"}},
-    {"type":"wokwi-resistor","id":"r","top":160,"left":300,"attrs":{"value":"330"}}
+    {"type":"board-esp32-devkit-c-v4","id":"mcu","top":0,"left":0,"attrs":{}},
+    {"type":"wokwi-led","id":"led","top":120,"left":340,"attrs":{"color":"red"}},
+    {"type":"wokwi-resistor","id":"r","top":180,"left":340,"attrs":{"value":"330"}}
   ],
   "connections":[
-    ["mcu:PC13","led:A","green",["h0"]],
+    ["mcu:D2","led:A","green",["h0"]],
     ["led:C","r:1","green",["v0"]],
     ["r:2","mcu:GND.1","black",["v0"]]
   ]
