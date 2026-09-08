@@ -25,4 +25,4 @@ def test_end_to_end_validation():
 
 def test_log_analyzer():
     summary = summarize([{"status": "PASS"}, {"status": "FAIL"}, {"status": "PASS"}])
-    assert summary == {"total": 3, "passed": 2, "failed": 1, "pass_rate_percent": 66.66666666666667}
+    assert summary == {"total": 3, "passed": 2, "failed": 1, "pass_rate_percent": 66.67}
