@@ -32,15 +32,16 @@ void led_toggle(void) {
 }
 
 void pwm_init(void) {
-    // Compatible with the Arduino-ESP32 core used by the PlatformIO build.
-    ledcSetup(PWM_CHANNEL, PWM_FREQUENCY, PWM_BITS);
-    ledcAttachPin(PWM_PIN, PWM_CHANNEL);
-    ledcWrite(PWM_CHANNEL, 0);
+    // Arduino-ESP32 3.x API: attach the PWM pin to a selected channel.
+    if (!ledcAttachChannel(PWM_PIN, PWM_FREQUENCY, PWM_BITS, PWM_CHANNEL)) {
+        Serial.println("PWM attach failed");
+    }
+    ledcWriteChannel(PWM_CHANNEL, 0);
 }
 
 void pwm_set(float duty) {
     duty = constrain(duty, 0.0f, 0.95f);
-    ledcWrite(PWM_CHANNEL, static_cast<uint32_t>(duty * PWM_MAX));
+    ledcWriteChannel(PWM_CHANNEL, static_cast<uint32_t>(duty * PWM_MAX));
 }
 
 void uart_init(void) {
@@ -93,9 +94,9 @@ float adc_current_from_raw(uint16_t raw) {
 }
 
 void board_init(void) {
+    uart_init();
     gpio_init();
     pwm_init();
-    uart_init();
     spi_init();
     i2c_init();
     adc_init();
