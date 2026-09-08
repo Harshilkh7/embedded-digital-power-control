@@ -19,6 +19,7 @@ The dashboard provides a browser-based buck-converter model plus an interactive 
 - **Peripherals:** GPIO, PWM, ADC, UART, SPI and I²C
 - **Digital control:** discrete PI controller with output limiting and anti-windup
 - **Power electronics:** averaged buck-converter plant model
+- **Protection:** over-voltage, over-current shutdown and under-voltage recovery reporting
 - **MCU simulation:** Wokwi ESP32 DevKit simulation
 - **Build system:** PlatformIO with ESP32 CI compilation
 
@@ -26,7 +27,8 @@ The dashboard provides a browser-based buck-converter model plus an interactive 
 
 - **Python validation:** automated regulation, load-step, protection and protocol tests
 - **Fault injection:** over-voltage, under-voltage and over-current validation cases
-- **Requirement-driven test generation:** natural-language requirement → candidate embedded test scenarios
+- **Requirement-driven test generation:** engineering requirement → candidate embedded test scenarios
+- **Optional GenAI adapter:** OpenAI Responses API integration behind the same `TestSpec` contract
 - **Validation runner:** executes scenarios against a deterministic firmware/device model
 - **Log analysis:** aggregates pass/fail results and validation metrics
 - **CI:** pytest regression checks plus ESP32 firmware compilation through GitHub Actions
@@ -41,10 +43,10 @@ The AI-assisted validation layer is intentionally part of the same project: it v
                            |
           +----------------+----------------+
           |                |                |
-         ADC              PWM          UART/SPI/I²C
+      ADC 34/35           PWM          UART/SPI/I²C
           |                |
           v                v
-       Vout feedback   Digital PI Controller
+       Vout/current    Digital PI Controller
                            |
                            v
                     Buck Converter
@@ -53,10 +55,10 @@ The AI-assisted validation layer is intentionally part of the same project: it v
                            |
                            +------> ADC feedback
 
-Requirement -> AI-assisted test generation -> Python runner
+Requirement -> optional GenAI generation -> deterministic fallback
                                       |
                                       v
-                             ESP32 firmware model
+                             Python validation runner
                                       |
                          fault injection + protocol
                                       |
@@ -70,7 +72,7 @@ Requirement -> AI-assisted test generation -> Python runner
 embedded-digital-power-control/
 ├── automation/              # Test generation + protocol utilities
 │   ├── ai_test_generator.py
-│   └── protocol.py
+│   └── llm_test_generator.py # Optional OpenAI adapter
 ├── control/                 # PI controller + buck model
 ├── docs/                    # Dashboard + design documentation
 ├── firmware/                # ESP32 PlatformIO firmware
@@ -97,6 +99,11 @@ python tools/run_validation.py
 python tools/generate_report.py
 ```
 
+The default validation path is deterministic and requires no API key. To opt
+into the LLM adapter, configure `OPENAI_API_KEY` and set
+`GENAI_TEST_GENERATOR=1`. Generated tests are treated as candidate scenarios;
+the validation runner still determines pass/fail using explicit checks.
+
 ## Build the ESP32 firmware
 
 Install PlatformIO, then:
@@ -120,7 +127,8 @@ The Wokwi configuration points to this ESP32 firmware image.
 |---|---:|
 | Status LED | GPIO 2 |
 | PWM output | GPIO 25 |
-| ADC feedback | GPIO 34 |
+| Voltage ADC | GPIO 34 |
+| Current ADC | GPIO 35 |
 | I²C SDA | GPIO 21 |
 | I²C SCL | GPIO 22 |
 | SPI SCK | GPIO 18 |
@@ -129,26 +137,23 @@ The Wokwi configuration points to this ESP32 firmware image.
 | SPI CS | GPIO 5 |
 | UART | USB serial / Serial |
 
-GPIO 34 is used only as an ADC input, while GPIO 25 provides the PWM control signal.
+GPIO 34 and GPIO 35 are ADC inputs, while GPIO 25 provides the PWM control signal.
 
 ## AI-assisted validation design
 
-`automation/ai_test_generator.py` defines the GenAI boundary. It converts an engineering requirement into candidate test specifications. A deterministic fallback is included so the repository remains runnable without an external API key. An approved LLM API can replace that boundary without changing the validation runner.
+`automation/ai_test_generator.py` defines the stable generation boundary. It
+uses a deterministic catalog by default and can delegate candidate generation
+to `automation/llm_test_generator.py` when explicitly enabled. This keeps CI
+reproducible while providing a real GenAI integration path.
 
-See [`docs/validation_architecture.md`](docs/validation_architecture.md) for the complete validation flow.
+See `docs/validation_architecture.md` for the complete validation flow.
 
-## Resume-ready descriptions
+## Resume-ready description
 
-**Embedded Digital Power Control Platform**
-
-> Developed a simulation-based ESP32 digital power-control platform with C++ peripheral integration, digital PI regulation, buck-converter modeling, Python/pytest validation, fault injection and performance analysis.
-
-**AI-Assisted Embedded Firmware Validation Framework**
-
-> Extended the ESP32 power-control platform with Python/pytest automation, requirement-driven test generation, fault injection, protocol validation, log analysis and CI-based regression testing.
+> Developed an ESP32 digital power-control platform with C++ peripheral integration, digital PI regulation, buck-converter modeling, Python/pytest validation, fault injection, requirement-driven GenAI test generation and CI-based firmware regression testing.
 
 **Important:** no physical hardware measurements are claimed.
 
 ## Technologies
 
-`C++` · `ESP32` · `Arduino-ESP32` · `PlatformIO` · `Python` · `NumPy` · `pytest` · `Digital Control` · `PWM` · `ADC` · `UART` · `SPI` · `I²C` · `Wokwi` · `GitHub Actions` · `JavaScript` · `GitHub Pages` · `GenAI`
+`C++` · `ESP32` · `Arduino-ESP32` · `PlatformIO` · `Python` · `NumPy` · `pytest` · `Digital Control` · `PWM` · `ADC` · `UART` · `SPI` · `I²C` · `Wokwi` · `GitHub Actions` · `GenAI`
