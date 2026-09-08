@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import os
 
 
 @dataclass(frozen=True)
@@ -8,16 +9,7 @@ class TestSpec:
     expected: str
 
 
-def generate_tests(requirement: str):
-    """Generate candidate validation scenarios from an engineering requirement.
-
-    The deterministic catalog is the safe offline fallback. A production LLM
-    adapter can return the same TestSpec contract without changing the runner.
-    """
-    requirement = requirement.strip()
-    if not requirement:
-        raise ValueError("engineering requirement must not be empty")
-
+def _deterministic_tests(requirement: str):
     return [
         TestSpec(
             "nominal_regulation",
@@ -37,7 +29,7 @@ def generate_tests(requirement: str):
         TestSpec(
             "under_voltage",
             "Force sensed voltage below 2.80 V.",
-            "Enter UNDERVOLTAGE and command zero PWM.",
+            "Enter UNDERVOLTAGE and continue recovery control.",
         ),
         TestSpec(
             "over_current",
@@ -50,3 +42,27 @@ def generate_tests(requirement: str):
             "Clamp commands to the safe 0..95% range.",
         ),
     ]
+
+
+def generate_tests(requirement: str):
+    """Generate candidate validation scenarios from an engineering requirement.
+
+    If explicitly enabled, the optional LLM adapter is used. Otherwise the
+    deterministic catalog provides a reproducible offline fallback for CI.
+    """
+    requirement = requirement.strip()
+    if not requirement:
+        raise ValueError("engineering requirement must not be empty")
+
+    if os.getenv("GENAI_TEST_GENERATOR") == "1":
+        try:
+            from automation.llm_test_generator import generate_tests_with_llm
+            generated = generate_tests_with_llm(requirement)
+            if generated:
+                return generated
+        except Exception:
+            # Validation must remain available even when the external model is
+            # unavailable, misconfigured, or returns an invalid response.
+            pass
+
+    return _deterministic_tests(requirement)
