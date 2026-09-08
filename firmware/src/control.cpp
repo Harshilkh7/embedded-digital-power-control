@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include "control.h"
 
 static float integral = 0.0f;
@@ -9,7 +10,7 @@ void control_reset(void) {
 float control_update(float reference, float measurement) {
     constexpr float kp = 0.08f;
     constexpr float ki = 80.0f;
-    constexpr float dt = 0.001f;
+    constexpr float dt = 0.01f;
     constexpr float min_output = 0.0f;
     constexpr float max_output = 0.95f;
 
