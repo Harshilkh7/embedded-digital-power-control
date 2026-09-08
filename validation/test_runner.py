@@ -1,12 +1,14 @@
-"""Execute generated and fault-injection validation scenarios."""
+"""Execute generated and fault-injection validation scenarios for ESP32 firmware."""
 from automation.ai_test_generator import generate_tests
 from validation.firmware_sim import FirmwareDevice
 from validation.fault_injection import faults
 from validation.log_analyzer import summarize
 
-def run_validation(requirement="Validate a 3.3 V embedded power controller"):
+
+def run_validation(requirement="Validate a 3.3 V ESP32 embedded power controller"):
     device = FirmwareDevice()
     events = []
+
     for spec in generate_tests(requirement):
         if spec.name == "nominal_regulation":
             state = device.apply_measurement(3.30, 0.5)
@@ -27,8 +29,11 @@ def run_validation(requirement="Validate a 3.3 V embedded power controller"):
         events.append({"name": fault["name"], "status": "PASS" if state == fault["expected"] else "FAIL", "state": state})
     return events, summarize(events)
 
+
 if __name__ == "__main__":
     events, summary = run_validation()
+    print("ESP32 Firmware Validation")
+    print("=" * 25)
     print(summary)
     for event in events:
         print(f"{event['status']}: {event['name']} -> {event['state']}")
