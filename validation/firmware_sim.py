@@ -18,8 +18,9 @@ class FirmwareDevice:
             self.state = "OVERVOLTAGE"
             self.pwm_duty = 0.0
         elif voltage < 2.80:
+            # UV is treated as a regulation fault: the controller keeps
+            # driving the plant so it can recover from a low output voltage.
             self.state = "UNDERVOLTAGE"
-            self.pwm_duty = 0.0
         elif current > 2.0:
             self.state = "OVERCURRENT"
             self.pwm_duty = 0.0
