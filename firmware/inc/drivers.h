@@ -1,11 +1,18 @@
 #ifndef DRIVERS_H
 #define DRIVERS_H
 #include <stdint.h>
+
 void board_init(void);
-void gpio_init(void); void led_toggle(void);
-void pwm_init(void); void pwm_set(float duty);
-void uart_init(void); void uart_puts(const char*);
-void spi_init(void); uint8_t spi_transfer(uint8_t);
+void gpio_init(void);
+void led_toggle(void);
+void pwm_init(void);
+void pwm_set(float duty);
+void uart_init(void);
+void uart_puts(const char *s);
+void spi_init(void);
+uint8_t spi_transfer(uint8_t data);
 void i2c_init(void);
-void adc_init(void); uint16_t adc_read(void);
+void adc_init(void);
+uint16_t adc_read(void);
+
 #endif
